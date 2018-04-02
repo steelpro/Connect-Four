@@ -1,47 +1,41 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TwoPlayer {
 	
-	static Scanner input = new Scanner (System.in);
+	static Scanner input = new Scanner(System.in);
 	public static String[][] array;
 	public static int choice;
-	public static ArrayList<Integer> spots;
 	public static int winner;
 	
-	public static void play() {
+	
+	
+	public static void play() throws InterruptedException {
 		
-		System.out.println("\nYou have chosen TWO PLAYER MODE\n");
+		System.out.println("\nYou have chosen TWO PLAYER MODE");
 		
-		array = new String[3][3];
-		int slot = 1;
+		winner = 0; 																		//0 = no one, 1 = player 1, 2 = player 2 
+		array = new String[6][7]; 															//two dimensional array created to hold board values
 		
-		for(int i = 0; i < array.length; i++) {
-				
-	        for( int j = 0; j < array[i].length; j++) {
-	              array[i][j] = "" + slot;  
-	              slot++;
-	        }    
+		for (int i = 0; i < array.length; i++) {	
+										
+	        for (int j = 0; j < array[i].length; j++) 
+	              array[i][j] = "o";  		              
 		}
 		
-		printBoard();
-
-		spots = new ArrayList<>();		
-		winner = 0;
+		printBoard();																		
 		
-		for (int i = 0; i < 9; i++) {
-			
-			if (i % 2 == 0 ) 
-				playerTurn("1", "X");			
+		for (int i = 0; i < 42; i++) { 													//loop for all spots on board, or until there is a winner
+		
+			if (i % 2 == 0) 																//player 1 is even, player 2 is odd
+				playerTurn(1, "R");			
 			else 
-				playerTurn("2", "O");
+				playerTurn(2, "Y");
 			
 			printBoard();	
-			spots.add(choice); 
 			
-			isWinner();
+			isWinner(); 																	//ask if there is a winner after each turn
 			
-			if (winner != 0)
+			if (winner != 0) 																//if there is, stop the loop
 				break;
 		}
 		
@@ -55,105 +49,155 @@ public class TwoPlayer {
 		input.nextLine(); input.nextLine();
 	}
 	
-	public static void playerTurn(String player, String value) {
+	
+	
+	public static void playerTurn(int playerNum, String playerVal) {
 		
-		System.out.println("TURN: Player " + player);
+		System.out.println("TURN: Player " + playerNum);
+		
+		while (!input.hasNextInt()) {
+			System.out.println("Enter a number for your column of choice:");
+			input.next();
+		}
+
 		choice = input.nextInt();
 		
-		while (!isValid()) 			
-			choice = input.nextInt();
+		while (!isValid()) {
+			
+			while (!input.hasNextInt()) {
+				System.out.println("Enter a number for your column of choice:");
+				input.next();
+			}		
+			
+			choice = input.nextInt();		
+		}
 		
-		
-		fillBoard(value);
+		dropPiece(playerVal);
 	}
 	
-	public static void fillBoard(String value) {
+	
+	
+	public static void dropPiece(String value) {
 		
-		switch (choice) {	
-			case (1): array[0][0] = value; break;
-			case (2): array[0][1] = value; break;
-			case (3): array[0][2] = value; break;
-			case (4): array[1][0] = value; break;
-			case (5): array[1][1] = value; break;
-			case (6): array[1][2] = value; break;
-			case (7): array[2][0] = value; break;
-			case (8): array[2][1] = value; break;
-			case (9): array[2][2] = value; break;					
+		for (int i = 5; i >= 0; i--) { //search through the board and drop piece
+			
+			if (!array[i][choice-1].contains("R") && !array[i][choice-1].contains("Y")) { 
+				array[i][choice-1] = value;		
+				break;
+			}
 		}
 	}
 	
+	
+	
 	public static boolean isValid() {
-			
-		if (spots.contains(choice) || 0 > choice || choice > 9) {
-			System.out.println("This is not a valid selection");
+		
+		if (choice > 7 || choice < 0) {
+			System.out.println("This column does not exist! Please select a different one.");
+			return false;
+		}
+		else if (!isEmpty()) { 																	//if column is full, isValid is false
+			System.out.println("This column is already full! Please select a different one.");
 			return false;
 		}
 		else
 			return true;	
 	}
 	
+	
+	
+	public static boolean isEmpty() {
+		
+		int counter = 0;
+		
+		for (int i = 5; i >= 0; i--) {
+
+			if (array[i][choice-1].equals("R") || array[i][choice-1].equals("Y") ) { 			//ask if selected spot already has color
+				counter++;
+				
+				if (counter == 6) 																//if each slot is checked, isEmpty is false
+					return false;	
+			}		
+			else 
+				return true;							
+		}
+		
+		return false;
+	}
+	
+	
+	
 	public static void isWinner() {
 		
 		String result = "";
 		
-		boolean go = true;
-		
-		while (go) {
+		for (int v = 0; v <= 3; v++) {
 			
-			/** CHECK FOR ACROSS **/
-			result = ""; result += array[0][0]; result += array[0][1]; 
-			result += array[0][2]; if (checkWin(result) != 0) break;
-			
-			result = ""; result += array[1][0]; result += array[1][1]; 
-			result += array[1][2]; if (checkWin(result) != 0) break;
-			
-			result = ""; result += array[2][0]; result += array[2][1]; 
-			result += array[2][2]; if (checkWin(result) != 0) break;
-			
-			/** CHECK FOR DOWN **/
-			result = ""; result += array[0][0]; result += array[1][0]; 
-			result += array[2][0]; if (checkWin(result) != 0) break;
-			
-			result = ""; result += array[0][1]; result += array[1][1]; 
-			result += array[2][1]; if (checkWin(result) != 0) break;
-			
-			result = ""; result += array[0][2]; result += array[1][2]; 
-			result += array[2][2]; if (checkWin(result) != 0) break;
-			
-			/** CHECK FOR DIAGONAL **/
-			result = ""; result += array[0][0]; result += array[1][1]; 
-			result += array[2][2]; if (checkWin(result) != 0) break;
-			
-			result = ""; result += array[0][2]; result += array[1][1]; 
-			result += array[2][0]; if (checkWin(result) != 0) break;
-			
-			if (checkWin(result) == 0)
-				break;
+			for (int r = 0; r < array.length; r++) {
+				
+		        for (int c = v; c <= v+3; c++) 
+		        	result += array[r][c];	    
+		        
+		        if (checkWin(result) != 0) 
+		        	winner = checkWin(result);
+		        
+		        result = "";
+			}
 		}
 		
-		winner = checkWin(result);
+		result = "";
+		
+		for (int v = 0; v <= 2; v++) {
+			
+			for (int c = 0; c <= 6; c++) {
+				
+		        for (int r = 5; r >= 2; r--) 
+		        	result += array[r][c];	       
+		        	     
+		        if (checkWin(result) != 0) 
+		        	winner = checkWin(result);
+		        
+		        result = "";
+			}
+		}	
 	}
+	
+	
 	
 	public static int checkWin(String result) {
 		
-		if (result.equals("XXX")) 
-			return 1;
-		else if (result.equals("OOO"))
-			return 2;
+		if (result.equals("RRRR")) 																		//if four colors in a row
+			return 1; 																					//player wins
+		else if (result.equals("YYYY"))
+			return 2; 																					//computer wins
 		else
-			return 0;
-	}
+			return 0; 																					//no winner
+	}	
 	
-	public static void printBoard() {
+	
+	
+	public static boolean isOpen(String slot) {
+		
+	    boolean isOpen = true;
+
+	    if (slot == "R" || slot == "Y")  																//if extra slot is taken, isOpen is false
+	    	isOpen = false;         	
+
+	    return isOpen;
+	}	
+	
+	
+	
+	public static void printBoard() { 									
 		
 		System.out.println();
+		System.out.println("1\t2\t3\t4\t5\t6\t7");
 		
 		for (int i = 0; i < array.length; i++) {
-
-	        for (int j = 0; j < array[i].length; j++) {
+			
+	        for (int j = 0; j < array[i].length; j++) 
 	            System.out.print(array[i][j] + "\t");		    
-	        }
-	        
+	        	        
 	        System.out.println("\n");
 		}
 	}

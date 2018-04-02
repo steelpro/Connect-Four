@@ -7,50 +7,48 @@ public class MainMenu {
 	public void mainMenu() throws InterruptedException {
 				
 		clearContent();
-		System.out.println("Welcome to Tic Tac Toe!");	
-		
-		boolean valid = true;
-		
-		while (valid) { //valid will always be true, so loop goes until user enters 4
+		System.out.println("Welcome to Connect Four!");	
+
+		while (true) { 																				//will always be true, so loop goes until user enters 4
 			
 			System.out.println("\nPlease type on your keyboard an option and then hit enter:");
 			
 			System.out.println("(1): ONE PLAYER MODE\n(2): TWO PLAYER MODE\n(3): INSTRUCTIONS\n(4): QUIT");
 			int choice = 0;
 			
-			try { choice = input.nextInt(); } //store user input 
+			try { choice = input.nextInt(); } 														
 			catch (Exception e) {
 				System.out.println("You have entered an invalid selection.\n"
 						+ "This program will now end.");
 				break;
 			}
 			
-			switch (choice) { //call actions based on user input 
+			switch (choice) { 																		//call actions based on user input 
 			
 				case 1: 
 					clearContent();
-					OnePlayer.play(); //call class to simulate 1 player mode 
+					OnePlayer.play(); 																//call class to simulate 1 player mode 
 					clearContent();
 					break;
 					
 				case 2: 
 					clearContent();
-					TwoPlayer.play(); //call class to simulate 2 player mode 
+					TwoPlayer.play(); 																//call class to simulate 2 player mode 
 					clearContent();
 					break;
 				
 				case 3: 
 					clearContent();
-					Instructions.instructions(); //call class to print instructions
+					Instructions.instructions(); 													//call class to print instructions
 					clearContent();
 					break;
 					
 				case 4:
 					System.out.println("So long and thanks for all the fish!");
-					System.exit(1); //close entire program
+					System.exit(1); 																//close entire program
 					break;
 					
-				default: //error if user enters number other than given
+				default: 																			//error if user enters number other than given
 					System.out.println("You have entered an unrecognized choice. "
 							+ "Please be sure to enter a valid option");
 					break;
@@ -58,8 +56,9 @@ public class MainMenu {
 		}
 	}
 	
-	public static void clearContent() {
-		
+	
+	
+	public static void clearContent() {	
 		for(int clear = 0; clear < 200; clear++) 
 			System.out.println("\n") ;
 	}

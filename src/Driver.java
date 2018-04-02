@@ -1,13 +1,13 @@
 /* Zachary Betters
- * 4/14/17
- * Tic Tac Toe Program Simulation
- * 4/14/17 Update: -Added new code to make computer player harder to beat	   
+ * 3/30/18
+ * Connect Four Program Simulation 
+ * 4/1/18 UPDATE: 	Cleaned up code (including comments)
+ * 				  	Fixed computer incorrectly stopping player from winning
  */
 
 public class Driver {
 
-	public static void main(String[] args) throws InterruptedException {
-		
+	public static void main(String[] args) throws InterruptedException {		
 		MainMenu menu = new MainMenu();
 		menu.mainMenu();		
 	}
